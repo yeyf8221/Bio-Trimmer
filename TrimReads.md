@@ -1,12 +1,28 @@
 # TrimReads
 
-[toc]
+## Members
 
-## Motivation
+Ye Yufan,Ai Ruiyao,Zhang Chunmiao
+
+## Abstract
+
+​		We plan to develop an algorithm to trim the low-quality segments in the high-throughput sequencing. The users can choose 2 ways to deal with these low-quality segments.
+1. **Quality threshold**
+The base whose quality is lower than the setting number will be deleted. Users can set this quality threshold in program.
+2. **Slipping windows**
+The bases in the Slipping windows whose average quality is lower than the setting number will be 
+deleted,by counting the average quality in window which is 'sliding' on the sequence. The length 
+of window can be set by users in the program.
+These settings should be given by a set of options like: --base-threshold 25 --window-threshold 
+20 ,so the program can recognize the trim method automatically.
+If the effect is better than our expectation,maybe it will come out the graphical interface of this 
+project.
+
+## Background
 
 ​		High-throughput sequencing technologies have revolutionized genomics research by generating vast amounts of genetic data. However, these sequences often contain low-quality segments, particularly at the ends of reads, which can adversely affect downstream analyses such as genome assembly, variant calling, and functional annotation. To ensure data reliability, it is crucial to remove these low-quality regions while preserving high-quality segments. This tool addresses this need by providing flexible trimming approaches (base-by-base or window-based) with configurable quality thresholds, enabling researchers to preprocess their sequencing data effectively before further analysis.
 
-## Algorithm
+## Algorithm analysis and implementation
 
 ​		The tool implements two distinct trimming strategies:
 
@@ -29,7 +45,7 @@
 - **Configurable Parameters**: Thresholds, window size are adjustable.
 - **FASTQ Compatibility**: Uses `Biopython’s` `SeqIO` for parsing and writing `FASTQ` files.
 
-## Experiment
+## Data example
 
 The provided Python script (`TrimReads.py`) is ready for deployment. Users can execute it via:
 
@@ -139,12 +155,50 @@ TACCGTGACAAGAAAGTTGTCGGTGTCTTTGTGTTTCTGTTGGTGCTGATATTGCCGAAAATCGGTAGACGCTACGGACT
 6-798:5-(((/60.5;A1(<4:?9::6;>/==CD@E@;=>028.*,24765:69:61%*((8,4966;;863(*%(##%*,38::.$$%(,.25+-%*-02;6;C>;.(
 ```
 
+You can use python package which named fastq_trim_tool.After installation, you may need to add Python's Scripts directory to your system PATH.
 
+- Find the installation location:
+  
+```bash
+pip show fastq_trim_tool
+```
+
+Look for the "Location" field in the output.
+
+- Add to PATH (Windows):
+
+```bash
+# Temporary solution (for current session):
+$env:Path += ";C:\Path\To\Python\Scripts"
+
+# Permanent solution:
+[Environment]::SetEnvironmentVariable(
+    "Path",
+    [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::User) + ";C:\Path\To\Python\Scripts",
+    [EnvironmentVariableTarget]::User
+)
+```
+Or 
+
+```bash
+& C:\Path\To\Python\Scripts\fastq_trim.exe sample.fastq --base-threshold 25
+```
+After installing this python package,you can trim your fastq file by :
+### Base-by-Base Method
+```bash
+fastq_trim input.fastq --base-threshold 25
+```
+### Sliding Window Trimming
+```bash
+fastq_trim input.fastq --window-threshold 20 --window-size 5
+```
+### Output Files
+Its name is called <input_filename>_trimmed.fastq in your original file folder.
 ## Conclusion
 
 ​		This tool provides an efficient solution for quality trimming of high-throughput sequencing data. By implementing both base-level and window-based approaches, it accommodates diverse quality profiles in sequencing reads. The use of `argparse` ensures user-friendly parameter customization.
 
-## Perspective
+### Perspective
 
 Future enhancements could include 
 
@@ -152,3 +206,12 @@ Future enhancements could include
 - Currently, only one method (base or window) can be used at a time. Future versions could allow combined trimming (e.g. base trimming first, then window trimming).
 - Additional Quality Metrics，including per-base quality plots (similar to FastQC) in the output report.
 
+## Workload
+- Ye Yufan：Basic code writing and explanation
+- Zhang Chunmiao: Code refinement and Markdown writing
+- Ai Ruiyao: Code testing and debugging
+## References
+
+[1]Lee S, Nguyen LT, Hayes BJ, Ross EM. Prowler: a novel trimming algorithm for Oxford Nanopore sequence data. Bioinformatics. 2021 Nov 5;37(21):3936-3937. doi: 10.1093/bioinformatics/btab630. PMID: 34473226.
+[2]Bush SJ. Read trimming has minimal effect on bacterial SNP-calling accuracy. Microb Genom. 2020 Dec;6(12):mgen000434. doi: 10.1099/mgen.0.000434. Epub 2020 Dec 11. PMID: 33332257; PMCID: PMC8116680.
+[3]Yang SF, Lu CW, Yao CT, Hung CM. To Trim or Not to Trim: Effects of Read Trimming on the De Novo Genome Assembly of a Widespread East Asian Passerine, the Rufous-Capped Babbler (Cyanoderma ruficeps Blyth). Genes (Basel). 2019 Sep 23;10(10):737. doi: 10.3390/genes10100737. PMID: 31548511; PMCID: PMC6826712.
