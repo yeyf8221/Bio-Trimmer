@@ -157,7 +157,45 @@ TACCGTGACAAGAAAGTTGTCGGTGTCTTTGTGTTTCTGTTGGTGCTGATATTGCCGAAAATCGGTAGACGCTACGGACT
 6-798:5-(((/60.5;A1(<4:?9::6;>/==CD@E@;=>028.*,24765:69:61%*((8,4966;;863(*%(##%*,38::.$$%(,.25+-%*-02;6;C>;.(
 ```
 
+You can use python package which named fastq_trim_tool.After installation, you may need to add Python's Scripts directory to your system PATH.
 
+- Find the installation location:
+  
+```bash
+pip show fastq_trim_tool
+```
+
+Look for the "Location" field in the output.
+
+- Add to PATH (Windows):
+
+```bash
+# Temporary solution (for current session):
+$env:Path += ";C:\Path\To\Python\Scripts"
+
+# Permanent solution:
+[Environment]::SetEnvironmentVariable(
+    "Path",
+    [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::User) + ";C:\Path\To\Python\Scripts",
+    [EnvironmentVariableTarget]::User
+)
+```
+Or 
+
+```bash
+& C:\Path\To\Python\Scripts\fastq_trim.exe sample.fastq --base-threshold 25
+```
+After installing this python package,you can trim your fastq file by :
+### Base-by-Base Method
+```bash
+fastq_trim input.fastq --base-threshold 25
+```
+### Sliding Window Trimming
+```bash
+fastq_trim input.fastq --window-threshold 20 --window-size 5
+```
+### Output Files
+Its name is called <input_filename>_trimmed.fastq in your original file folder.
 ## Conclusion
 
 ​		This tool provides an efficient solution for quality trimming of high-throughput sequencing data. By implementing both base-level and window-based approaches, it accommodates diverse quality profiles in sequencing reads. The use of `argparse` ensures user-friendly parameter customization.
